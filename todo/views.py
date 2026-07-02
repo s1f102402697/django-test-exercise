@@ -54,7 +54,7 @@ def delete(request,task_id):
     try:
         task = Task.objects.get(pk=task_id)
     except Task.objects.get(pk=task_id):
-    raise Http404("Task does not exist")
+        raise Http404("Task does not exist")
     return redirect(index)
 
 def close(request, task_id):
