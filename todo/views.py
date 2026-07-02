@@ -53,7 +53,7 @@ def update(request, task_id):
 def delete(request,task_id):
     try:
         task = Task.objects.get(pk=task_id)
-    except Task.objects.get(pk=task_id)
+    except Task.objects.get(pk=task_id):
     raise Http404("Task does not exist")
     return redirect(index)
 
