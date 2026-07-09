@@ -98,6 +98,23 @@ class TodoViewCase(TestCase):
         self.assertEqual(response.context["tasks"][0], task1)
         self.assertEqual(response.context["tasks"][1], task2)
 
+    def test_delete_existing_task(self):
+        task = Task(title="task to delete")
+        task.save()
+        task_id = task.pk
+        
+        client = Client()
+        response = client.get(f"/{task_id}/delete")
+        
+        self.assertEqual(response.status_code, 302)
+        self.assertFalse(Task.objects.filter(pk=task_id).exists())
+
+    def test_delete_nonexistent_task(self):
+        client = Client()
+        response = client.get("/999/delete")
+        
+        self.assertEqual(response.status_code, 404)
+
     def test_detail_get_success(self):
         task = Task(title="task1", due_at=timezone.make_aware(datetime(2024, 7, 1)))
         task.save()
