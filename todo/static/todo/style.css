@@ -1,0 +1,310 @@
+:root {
+  --bg: #f6f1e8;
+  --bg-soft: #fbf8f2;
+  --surface: rgba(255, 255, 255, 0.94);
+  --surface-strong: #ffffff;
+  --line: rgba(23, 42, 74, 0.12);
+  --line-strong: rgba(23, 42, 74, 0.22);
+  --text-main: #16294a;
+  --text-subtle: #58657c;
+  --navy: #1b3054;
+  --navy-deep: #10223e;
+  --gold: #b69249;
+  --gold-soft: #d8c08a;
+  --shadow-soft: 0 18px 40px rgba(20, 37, 64, 0.08);
+  --shadow-card: 0 24px 60px rgba(20, 37, 64, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 56px 24px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  color: var(--text-main);
+  background:
+    radial-gradient(circle at top right, rgba(214, 194, 150, 0.2), transparent 26%),
+    radial-gradient(circle at top left, rgba(27, 48, 84, 0.06), transparent 32%),
+    linear-gradient(180deg, var(--bg-soft), var(--bg));
+  font-family:
+    "Helvetica Neue", "Avenir Next", "Hiragino Sans", "Yu Gothic", sans-serif;
+  font-weight: 400;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--navy-deep), var(--gold-soft), var(--navy-deep));
+  opacity: 0.9;
+}
+
+body > * {
+  width: min(960px, 100%);
+}
+
+h1,
+h2 {
+  margin: 0;
+  color: var(--navy-deep);
+  font-family:
+    "Times New Roman", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  line-height: 1.15;
+}
+
+h1 {
+  position: relative;
+  padding-bottom: 16px;
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+h1::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: min(180px, 28vw);
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), rgba(182, 146, 73, 0.15));
+}
+
+h2 {
+  font-size: clamp(1.35rem, 3.2vw, 2rem);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+p {
+  margin: -4px 0 0;
+  max-width: 64ch;
+  color: var(--text-subtle);
+  font-size: 1.02rem;
+  line-height: 1.9;
+  font-weight: 400;
+}
+
+form,
+body > div:not(.text),
+body > ul,
+.text {
+  position: relative;
+  background: linear-gradient(180deg, var(--surface-strong), var(--surface));
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  box-shadow: var(--shadow-soft);
+}
+
+form {
+  padding: 34px;
+}
+
+body > div:not(.text),
+body > ul,
+.text {
+  padding: 26px 28px;
+}
+
+form::before,
+body > div:not(.text)::before,
+body > ul::before,
+.text::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(182, 146, 73, 0.08);
+  pointer-events: none;
+}
+
+form > div + div {
+  margin-top: 18px;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 8px;
+  color: var(--navy);
+  font-size: 0.83rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+input {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid rgba(23, 42, 74, 0.14);
+  border-radius: 14px;
+  outline: none;
+  color: var(--text-main);
+  background: #fffdf9;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  font: inherit;
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    background-color 160ms ease;
+}
+
+input::placeholder {
+  color: #8f97a7;
+}
+
+input:focus {
+  border-color: rgba(182, 146, 73, 0.42);
+  background: #ffffff;
+  box-shadow:
+    0 0 0 4px rgba(182, 146, 73, 0.1),
+    0 10px 24px rgba(20, 37, 64, 0.06);
+}
+
+button,
+a {
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+button {
+  appearance: none;
+  padding: 14px 28px;
+  border: 1px solid rgba(27, 48, 84, 0.22);
+  border-radius: 999px;
+  color: var(--navy-deep);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(247, 243, 235, 0.96));
+  box-shadow: 0 10px 20px rgba(20, 37, 64, 0.06);
+  font: inherit;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+button:hover,
+button:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(182, 146, 73, 0.42);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(242, 237, 227, 1));
+  box-shadow:
+    0 14px 28px rgba(20, 37, 64, 0.08),
+    inset 0 0 0 1px rgba(216, 192, 138, 0.14);
+}
+
+a {
+  color: var(--navy);
+  text-decoration: none;
+}
+
+a:hover,
+a:focus-visible {
+  color: var(--gold);
+}
+
+body > div:not(.text) > a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 10px 0 0;
+  padding: 10px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.82);
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+body > div:not(.text) > a:hover,
+body > div:not(.text) > a:focus-visible {
+  border-color: rgba(182, 146, 73, 0.38);
+  box-shadow: 0 10px 22px rgba(20, 37, 64, 0.08);
+}
+
+.text {
+  margin-top: 0;
+  box-shadow: var(--shadow-card);
+}
+
+.text + .text {
+  margin-top: 18px;
+}
+
+.text h2 {
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgba(182, 146, 73, 0.18);
+}
+
+.text h2 a {
+  color: var(--navy-deep);
+}
+
+.text h2 a:hover,
+.text h2 a:focus-visible {
+  color: var(--gold);
+}
+
+ul {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
+li {
+  color: var(--text-subtle);
+  line-height: 1.9;
+  font-weight: 400;
+}
+
+li::marker {
+  color: rgba(182, 146, 73, 0.75);
+}
+
+li + li {
+  margin-top: 8px;
+}
+
+br {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  body {
+    padding: 36px 16px 56px;
+    gap: 18px;
+  }
+
+  form,
+  body > div:not(.text),
+  body > ul,
+  .text {
+    padding: 22px 20px;
+    border-radius: 20px;
+  }
+
+  button,
+  body > div:not(.text) > a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  body > div:not(.text) > a {
+    margin-right: 0;
+  }
+}
