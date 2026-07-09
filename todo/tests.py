@@ -131,6 +131,22 @@ class TodoViewCase(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
+    def test_close_post_success(self):
+        task = Task(title="task1", due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task.save()
+        client = Client()
+
+        response = client.post("/{}/close".format(task.pk))
+        task.refresh_from_db()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/")
+        self.assertTrue(task.completed)
+
+    def test_close_post_fail(self):
+        client = Client()
+        response = client.post("/1/close")
+
     def test_update_get_success(self):
         task = Task(title="task1", due_at=timezone.make_aware(datetime(2024, 7, 1)))
         task.save()
