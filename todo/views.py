@@ -26,7 +26,7 @@ def index(request):
     else:
         tasks = tasks.order_by("-posted_at")
 
-    context = {"tasks": tasks, "q": q}
+    context = {"tasks": tasks, "q": q, "order": order}
     return render(request, "todo/index.html", context)
 
 
@@ -66,11 +66,22 @@ def delete(request, task_id):
     task.delete()
     return redirect(index)
 
+
 def close(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
     except Task.DoesNotExist:
         raise Http404("Task does not exist")
     task.completed = True
+    task.save()
+    return redirect(index)
+
+
+def reopen(request, task_id):
+    try:
+        task = Task.objects.get(pk=task_id)
+    except Task.DoesNotExist:
+        raise Http404("Task does not exist")
+    task.completed = False
     task.save()
     return redirect(index)
