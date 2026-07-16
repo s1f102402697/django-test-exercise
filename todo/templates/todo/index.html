@@ -32,22 +32,26 @@
     </form>
     <br />
 
-    <form action="{% url 'index' %}" method="get">
-      <input
-        name="q"
-        type="text"
-        value="{{ q|default:'' }}"
-        placeholder="Search tasks"
-      />
-      {% if request.GET.order %}
-      <input type="hidden" name="order" value="{{ request.GET.order }}" />
+    <form class="search-form" action="{% url 'index' %}" method="get">
+      <div>
+        <label for="searchInput">Search by title</label>
+        <input
+          id="searchInput"
+          name="q"
+          type="text"
+          value="{{ q|default:'' }}"
+          placeholder="Search tasks"
+        />
+      </div>
+      {% if order %}
+      <input type="hidden" name="order" value="{{ order }}" />
       {% endif %}
       <button type="submit">Search</button>
     </form>
 
     <div>
-      <a href="{% url 'index' %}?order=due{% if q %}&q={{ q }}{% endif %}">Sort by Due Date</a> |
-      <a href="{% url 'index' %}?order=post{% if q %}&q={{ q }}{% endif %}">Sort by Posted Date</a>
+      <a href="{% url 'index' %}?order=due{% if q %}&q={{ q|urlencode }}{% endif %}">Sort by Due Date</a> |
+      <a href="{% url 'index' %}?order=post{% if q %}&q={{ q|urlencode }}{% endif %}">Sort by Posted Date</a>
     </div>
 
     {% for task in tasks %}
