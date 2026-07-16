@@ -98,6 +98,22 @@ class TodoViewCase(TestCase):
         self.assertEqual(response.context["tasks"][0], task1)
         self.assertEqual(response.context["tasks"][1], task2)
 
+    def test_index_get_search_filters_and_orders(self):
+        task1 = Task(title="alpha task", due_at=timezone.make_aware(datetime(2024, 8, 1)))
+        task1.save()
+        task2 = Task(title="beta task", due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task2.save()
+        task3 = Task(title="ALPHA other", due_at=timezone.make_aware(datetime(2024, 6, 1)))
+        task3.save()
+        client = Client()
+        response = client.get("/?q=alpha&order=due")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, "todo/index.html")
+        self.assertContains(response, "alpha task")
+        self.assertContains(response, "ALPHA other")
+        self.assertNotContains(response, "beta task")
+
     def test_delete_existing_task(self):
         task = Task(title="task to delete")
         task.save()
