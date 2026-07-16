@@ -26,6 +26,7 @@ def index(request):
     else:
         tasks = tasks.order_by("-posted_at")
 
+    context = {"tasks": tasks, "q": q}
     context = {"tasks": tasks, "q": q, "order": order}
     return render(request, "todo/index.html", context)
 
