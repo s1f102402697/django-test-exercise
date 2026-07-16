@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.http import Http404
 from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_datetime
+from django.views.decorators.http import require_POST
 from todo.models import Task
 
 
@@ -26,7 +27,6 @@ def index(request):
     else:
         tasks = tasks.order_by("-posted_at")
 
-    context = {"tasks": tasks, "q": q}
     context = {"tasks": tasks, "q": q, "order": order}
     return render(request, "todo/index.html", context)
 
@@ -68,6 +68,7 @@ def delete(request, task_id):
     return redirect(index)
 
 
+@require_POST
 def close(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)
@@ -78,6 +79,7 @@ def close(request, task_id):
     return redirect(index)
 
 
+@require_POST
 def reopen(request, task_id):
     try:
         task = Task.objects.get(pk=task_id)

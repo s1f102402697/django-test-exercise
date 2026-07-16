@@ -82,6 +82,14 @@ class TodoViewCase(TestCase):
         self.assertEqual(response.context["q"], "search")
         self.assertContains(response, 'name="q"')
         self.assertContains(response, 'value="search"')
+        self.assertContains(response, 'class="search-form"')
+
+    def test_index_get_search_query_is_encoded_in_sort_links(self):
+        client = Client()
+        response = client.get("/", {"q": "R&D"})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "q=R%26D")
 
     def test_index_get_order_post(self):
         task1 = Task(title="task1", due_at=timezone.make_aware(datetime(2024, 7, 1)))
@@ -124,6 +132,7 @@ class TodoViewCase(TestCase):
         self.assertContains(response, "alpha task")
         self.assertContains(response, "ALPHA other")
         self.assertNotContains(response, "beta task")
+        self.assertEqual(list(response.context["tasks"]), [task3, task1])
 
     def test_delete_existing_task(self):
         task = Task(title="task to delete")
@@ -188,29 +197,55 @@ class TodoViewCase(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    def test_detail_get_incomplete_task_shows_complete_link_only(self):
+    def test_reopen_get_is_not_allowed(self):
+        task = Task.objects.create(title="task1", completed=True)
+        client = Client()
+
+        response = client.get(f"/{task.pk}/reopen")
+
+        self.assertEqual(response.status_code, 405)
+        task.refresh_from_db()
+        self.assertTrue(task.completed)
+
+    def test_detail_get_incomplete_task_shows_complete_form_only(self):
         task = Task(title="task1", due_at=timezone.make_aware(datetime(2024, 7, 1)))
         task.save()
         client = Client()
         response = client.get(f"/{task.pk}/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, ">完了</a>")
-        self.assertNotContains(response, ">未完了へ戻す</a>")
+        self.assertContains(response, f'action="/{task.pk}/close"')
+        self.assertContains(response, 'method="post"')
+        self.assertContains(response, ">完了</button>")
+        self.assertNotContains(response, ">未完了へ戻す</button>")
 
-    def test_detail_get_completed_task_shows_reopen_link_only(self):
+    def test_detail_get_completed_task_shows_reopen_form_only(self):
         task = Task(title="task1", due_at=timezone.make_aware(datetime(2024, 7, 1)), completed=True)
         task.save()
         client = Client()
         response = client.get(f"/{task.pk}/")
 
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, ">未完了へ戻す</a>")
-        self.assertNotContains(response, ">完了</a>")
+        self.assertContains(response, f'action="/{task.pk}/reopen"')
+        self.assertContains(response, 'method="post"')
+        self.assertContains(response, ">未完了へ戻す</button>")
+        self.assertNotContains(response, ">完了</button>")
 
     def test_close_post_fail(self):
         client = Client()
         response = client.post("/1/close")
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_close_get_is_not_allowed(self):
+        task = Task.objects.create(title="task1")
+        client = Client()
+
+        response = client.get(f"/{task.pk}/close")
+
+        self.assertEqual(response.status_code, 405)
+        task.refresh_from_db()
+        self.assertFalse(task.completed)
 
     def test_update_get_success(self):
         task = Task(title="task1", due_at=timezone.make_aware(datetime(2024, 7, 1)))
