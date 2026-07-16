@@ -21,7 +21,6 @@ def index(request):
     if q:
         tasks = tasks.filter(title__icontains=q)
 
-    if request.GET.get("order") == "due":
     if order == "due":
         tasks = tasks.order_by("due_at")
     else:
