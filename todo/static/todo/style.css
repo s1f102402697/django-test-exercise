@@ -237,6 +237,18 @@ body > div:not(.text) > a:focus-visible {
   box-shadow: 0 10px 22px rgba(20, 37, 64, 0.08);
 }
 
+body > div.task-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+body > div.task-actions > a {
+  flex: 1 1 150px;
+  margin: 0;
+}
+
 .text {
   margin-top: 0;
   box-shadow: var(--shadow-card);
@@ -306,5 +318,9 @@ br {
 
   body > div:not(.text) > a {
     margin-right: 0;
+  }
+
+  body > div.task-actions > a {
+    flex-basis: 100%;
   }
 }
