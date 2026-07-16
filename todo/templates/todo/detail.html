@@ -21,11 +21,15 @@
       {% endif %}
     </ul>
 
-    <div>
+    <div class="task-actions">
       <a href="{% url 'index' %}">Top</a>
-        <a href="{% url 'delete' task.id %}">Delete</a>
-      | <a href="{% url 'update' task.id %}">Edit</a>
-      <a href="{%url 'close' task.id%}">close</a>
+      <a href="{% url 'delete' task.id %}">Delete</a>
+      <a href="{% url 'update' task.id %}">Edit</a>
+      {% if task.completed %}
+      <a href="{% url 'reopen' task.id %}">未完了へ戻す</a>
+      {% else %}
+      <a href="{% url 'close' task.id %}">完了</a>
+      {% endif %}
     </div>
   </body>
 </html>
