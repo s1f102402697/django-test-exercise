@@ -109,6 +109,22 @@ class TodoViewCase(TestCase):
         self.assertEqual(response.context["tasks"][0], task1)
         self.assertEqual(response.context["tasks"][1], task2)
 
+    def test_index_get_search_filters_and_orders(self):
+        task1 = Task(title="alpha task", due_at=timezone.make_aware(datetime(2024, 8, 1)))
+        task1.save()
+        task2 = Task(title="beta task", due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task2.save()
+        task3 = Task(title="ALPHA other", due_at=timezone.make_aware(datetime(2024, 6, 1)))
+        task3.save()
+        client = Client()
+        response = client.get("/?q=alpha&order=due")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, "todo/index.html")
+        self.assertContains(response, "alpha task")
+        self.assertContains(response, "ALPHA other")
+        self.assertNotContains(response, "beta task")
+
     def test_delete_existing_task(self):
         task = Task(title="task to delete")
         task.save()
@@ -153,6 +169,44 @@ class TodoViewCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/")
         self.assertTrue(task.completed)
+
+    def test_reopen_post_success(self):
+        task = Task(title="task1", due_at=timezone.make_aware(datetime(2024, 7, 1)), completed=True)
+        task.save()
+        client = Client()
+
+        response = client.post(f"/{task.pk}/reopen")
+        task.refresh_from_db()
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/")
+        self.assertFalse(task.completed)
+
+    def test_reopen_post_fail(self):
+        client = Client()
+        response = client.post("/999/reopen")
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_detail_get_incomplete_task_shows_complete_link_only(self):
+        task = Task(title="task1", due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task.save()
+        client = Client()
+        response = client.get(f"/{task.pk}/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, ">完了</a>")
+        self.assertNotContains(response, ">未完了へ戻す</a>")
+
+    def test_detail_get_completed_task_shows_reopen_link_only(self):
+        task = Task(title="task1", due_at=timezone.make_aware(datetime(2024, 7, 1)), completed=True)
+        task.save()
+        client = Client()
+        response = client.get(f"/{task.pk}/")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, ">未完了へ戻す</a>")
+        self.assertNotContains(response, ">完了</a>")
 
     def test_close_post_fail(self):
         client = Client()
